@@ -11,9 +11,9 @@ func NewServerStat() *ServerStat {
 }
 
 type Usage struct {
-	Cpu float64
+	Cpu    float64
 	Memory float64
-	Disk string
+	Disk   string
 }
 
 var wait sync.WaitGroup
@@ -23,7 +23,7 @@ func (s *ServerStat) ServerStat() *Usage {
 	wait.Add(1)
 	go DiskUsage(disk)
 	wait.Add(1)
-	usage :=  CpuAndMemoryUsage()
+	usage := CpuAndMemoryUsage()
 	wait.Wait()
 	usage.Disk = <-disk
 	return usage

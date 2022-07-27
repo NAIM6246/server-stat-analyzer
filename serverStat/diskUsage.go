@@ -11,7 +11,7 @@ import (
 )
 
 func DiskUsage(str chan string) {
-	cmd := exec.Command("pydf")
+	cmd := exec.Command("df", "-h", "/")
 	cmd.Stderr = os.Stdout
 	cmdOutput := &bytes.Buffer{}
 	cmd.Stdout = cmdOutput
@@ -22,11 +22,14 @@ func DiskUsage(str chan string) {
 	totalSize := 0.0
 	totalUsed := 0.0
 	totalAvailable := 0.0
+	diskOuput := ""
+	// fmt.Println(string(cmdOutput.Bytes()))
 	for {
 		line, err := cmdOutput.ReadString('\n')
 		if err != nil {
 			break
 		}
+		diskOuput = line
 		tokens := strings.Split(line, " ")
 		ft := make([]string, 0)
 		for _, t := range tokens {
@@ -53,9 +56,9 @@ func DiskUsage(str chan string) {
 		totalAvailable += available
 	}
 
-	fmt.Println("total disk size : ", totalSize)
-	fmt.Println("total disk usage : ", totalUsed)
-	fmt.Println("total available : ", totalAvailable)
-	defer wait.Done()
-	str <- cmdOutput.String()
+	// fmt.Println("total disk size : ", totalSize)
+	// fmt.Println("total disk usage : ", totalUsed)
+	// fmt.Println("total available : ", totalAvailable)
+	// wait.Done()
+	str <- diskOuput
 }

@@ -10,8 +10,6 @@ import (
 	"strings"
 )
 
-
-
 func CpuAndMemoryUsage() *Usage {
 	cmd := exec.Command("ps", "aux")
 	cmd.Stderr = os.Stdout
@@ -30,6 +28,9 @@ func CpuAndMemoryUsage() *Usage {
 			break
 		}
 		tokens := strings.Split(line, " ")
+		if tokens[0] == "USER" {
+			continue
+		}
 		ft := make([]string, 0)
 		for _, t := range tokens {
 			if t != "" && t != "\t" {
@@ -56,7 +57,7 @@ func CpuAndMemoryUsage() *Usage {
 	}
 	fmt.Println("total Cpu usage : ", totalCpuUsage)
 	fmt.Println("totla mem usage : ", totalMemUsage)
-	defer wait.Done()
+	wait.Done()
 	return &Usage{
 		Cpu:    totalCpuUsage,
 		Memory: totalMemUsage,
