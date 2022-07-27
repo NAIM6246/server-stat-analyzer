@@ -10,7 +10,9 @@ import (
 	"strings"
 )
 
-func CpuAndMemoryUsage() {
+
+
+func CpuAndMemoryUsage() *Usage {
 	cmd := exec.Command("ps", "aux")
 	cmd.Stderr = os.Stdout
 	cmdOutput := &bytes.Buffer{}
@@ -54,6 +56,9 @@ func CpuAndMemoryUsage() {
 	}
 	fmt.Println("total Cpu usage : ", totalCpuUsage)
 	fmt.Println("totla mem usage : ", totalMemUsage)
-	// fmt.Println("total process : ", len(processes))
-	wait.Done()
+	defer wait.Done()
+	return &Usage{
+		Cpu:    totalCpuUsage,
+		Memory: totalMemUsage,
+	}
 }

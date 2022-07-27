@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func DiskUsage() {
+func DiskUsage(str chan string) {
 	cmd := exec.Command("pydf")
 	cmd.Stderr = os.Stdout
 	cmdOutput := &bytes.Buffer{}
@@ -56,5 +56,6 @@ func DiskUsage() {
 	fmt.Println("total disk size : ", totalSize)
 	fmt.Println("total disk usage : ", totalUsed)
 	fmt.Println("total available : ", totalAvailable)
-	wait.Done()
+	defer wait.Done()
+	str <- cmdOutput.String()
 }

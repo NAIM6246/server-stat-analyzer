@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -13,7 +14,10 @@ func main() {
 	serverStat := serverStat.NewServerStat()
 
 	router.Get("/server-stat",func(w http.ResponseWriter, r *http.Request) {
-		serverStat.ServerStat()
+		stat := serverStat.ServerStat()
+		
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(stat)
 	})
 	fmt.Println("Server running on port 8080")
 	http.ListenAndServe(":8080",router)
