@@ -11,10 +11,10 @@ import (
 )
 
 type DiskInformation struct {
-	TotalSize       float64
-	TotalUsed       float64
-	TotalAvailable  float64
-	UsagePercentage float64
+	TotalSize       float64 `json:"totalSize"`
+	TotalUsed       float64 `json:"totalUsed"`
+	TotalAvailable  float64 `json:"totalAvailable"`
+	UsagePercentage float64 `json:"usagePercentage"`
 }
 
 func DiskUsage(str chan DiskInformation) {

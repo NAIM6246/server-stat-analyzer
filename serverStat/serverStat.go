@@ -12,10 +12,10 @@ func NewServerStat() *ServerStat {
 }
 
 type Usage struct {
-	Cpu          float64
-	Memory       float64
-	Disk         DiskInformation
-	ResponseTime int64
+	Cpu          float64         `json:"cpu"`
+	Memory       float64         `json:"memory"`
+	Disk         DiskInformation `json:"disk"`
+	ResponseTime int64           `json:"responseTime"`
 }
 
 var wait sync.WaitGroup
