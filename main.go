@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"github.com/naim6246/server-stat-analyzer/serverStat"
 )
 
@@ -13,12 +14,22 @@ func main() {
 	router := chi.NewRouter()
 	serverStat := serverStat.NewServerStat()
 
-	router.Get("/server-stat",func(w http.ResponseWriter, r *http.Request) {
+	//cors
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"https://*", "http://*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300,
+	}))
+
+	router.Get("/server-stat", func(w http.ResponseWriter, r *http.Request) {
 		stat := serverStat.ServerStat()
-		
-		w.WriteHeader(http.StatusCreated)
+
+		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(stat)
 	})
 	fmt.Println("Server running on port 8080")
-	http.ListenAndServe(":8080",router)
+	http.ListenAndServe(":8080", router)
 }

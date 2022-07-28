@@ -10,7 +10,14 @@ import (
 	"strings"
 )
 
-func DiskUsage(str chan string) {
+type DiskInformation struct {
+	TotalSize       float64
+	TotalUsed       float64
+	TotalAvailable  float64
+	UsagePercentage float64
+}
+
+func DiskUsage(str chan DiskInformation) {
 	cmd := exec.Command("df", "-h", "/")
 	cmd.Stderr = os.Stdout
 	cmdOutput := &bytes.Buffer{}
@@ -22,43 +29,51 @@ func DiskUsage(str chan string) {
 	totalSize := 0.0
 	totalUsed := 0.0
 	totalAvailable := 0.0
-	diskOuput := ""
-	// fmt.Println(string(cmdOutput.Bytes()))
+	totalUsagePercentage := 0.0
+	// diskOuput := ""
 	for {
 		line, err := cmdOutput.ReadString('\n')
 		if err != nil {
 			break
 		}
-		diskOuput = line
 		tokens := strings.Split(line, " ")
-		ft := make([]string, 0)
-		for _, t := range tokens {
-			if t != "" && t != "\t" {
-				ft = append(ft, t)
-			}
-		}
-		fmt.Println(ft[1])
-		size, err := strconv.ParseFloat(ft[1], 64)
-		if err != nil {
+		ft := make([]float64, 0)
+
+		if !strings.Contains(tokens[0], "/dev/sda") {
 			continue
 		}
-		used, err := strconv.ParseFloat(ft[2], 64)
-		if err != nil {
-			log.Fatal(err)
-		}
 
-		available, err := strconv.ParseFloat(ft[3], 64)
-		if err != nil {
-			log.Fatal(err)
+		for _, t := range tokens {
+			if t != "" && t != "\t" && !strings.Contains(t, "/dev/") && (t[0] >= '0' && t[0] <= '9') {
+				str := ""
+				for _, s := range t {
+					if s >= '0' && s <= '9' || s == '.' {
+						str += string(s)
+					}
+				}
+				data, err := strconv.ParseFloat(str, 64)
+				if err != nil {
+					log.Fatal(err)
+				}
+				ft = append(ft, data)
+			}
 		}
+		size := ft[0]
+		used := ft[1]
+		available := ft[2]
+		usagePercentage := ft[3]
+
 		totalSize += size
 		totalUsed += used
 		totalAvailable += available
+		totalUsagePercentage += usagePercentage
 	}
 
-	// fmt.Println("total disk size : ", totalSize)
-	// fmt.Println("total disk usage : ", totalUsed)
-	// fmt.Println("total available : ", totalAvailable)
-	// wait.Done()
-	str <- diskOuput
+	wait.Done()
+	str <- DiskInformation{
+		TotalSize:       totalSize,
+		TotalUsed:       totalUsed,
+		TotalAvailable:  totalAvailable,
+		UsagePercentage: totalUsagePercentage,
+	}
 }

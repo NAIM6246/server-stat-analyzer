@@ -37,10 +37,6 @@ func CpuAndMemoryUsage() *Usage {
 				ft = append(ft, t)
 			}
 		}
-		// pid, err := strconv.Atoi(ft[1])
-		// if err != nil {
-		// 	continue
-		// }
 
 		cpu, err := strconv.ParseFloat(ft[2], 64)
 		if err != nil {
