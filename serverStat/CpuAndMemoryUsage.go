@@ -51,9 +51,6 @@ func CpuAndMemoryUsage() *Usage {
 		totalMemUsage += mem
 
 	}
-	fmt.Println("total Cpu usage : ", totalCpuUsage)
-	fmt.Println("totla mem usage : ", totalMemUsage)
-	wait.Done()
 	return &Usage{
 		Cpu:    totalCpuUsage,
 		Memory: totalMemUsage,

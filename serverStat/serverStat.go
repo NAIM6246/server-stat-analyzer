@@ -1,7 +1,6 @@
 package serverStat
 
 import (
-	"sync"
 	"time"
 )
 
@@ -18,16 +17,11 @@ type Usage struct {
 	ResponseTime int64           `json:"responseTime"`
 }
 
-var wait sync.WaitGroup
-
 func (s *ServerStat) ServerStat() *Usage {
 	disk := make(chan DiskInformation)
-	wait.Add(1)
 	go DiskUsage(disk)
-	wait.Add(1)
 	usage := CpuAndMemoryUsage()
-	wait.Wait()
 	usage.Disk = <-disk
-	usage.ResponseTime = time.Now().Unix()
+	usage.ResponseTime = time.Now().UnixMilli()
 	return usage
 }

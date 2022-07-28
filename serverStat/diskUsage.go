@@ -69,7 +69,6 @@ func DiskUsage(str chan DiskInformation) {
 		totalUsagePercentage += usagePercentage
 	}
 
-	wait.Done()
 	str <- DiskInformation{
 		TotalSize:       totalSize,
 		TotalUsed:       totalUsed,
