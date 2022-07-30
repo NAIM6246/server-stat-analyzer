@@ -7,10 +7,12 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	"github.com/naim6246/server-stat-analyzer/configs"
 	"github.com/naim6246/server-stat-analyzer/serverStat"
 )
 
 func main() {
+	config := configs.GetAppConfig()
 	router := chi.NewRouter()
 	serverStat := serverStat.NewServerStat()
 
@@ -30,6 +32,6 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(stat)
 	})
-	fmt.Println("Server running on port 8080")
-	http.ListenAndServe(":8080", router)
+	fmt.Println("Server running on port: ", config.ListenPort)
+	http.ListenAndServe(fmt.Sprintf(":%d", config.ListenPort), router)
 }
