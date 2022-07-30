@@ -8,7 +8,9 @@ import (
 )
 
 type AppConfig struct {
-	ListenPort int `json:"listenPort"`
+	ListenPort        int `json:"listenPort"`
+	MaxAllowedToStore int `json:"maxAllowedToStore"`
+	IntervalInSec     int `json:"interval"`
 }
 
 const path = "/config.json"

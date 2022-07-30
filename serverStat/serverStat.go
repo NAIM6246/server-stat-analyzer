@@ -17,7 +17,7 @@ type Usage struct {
 	ResponseTime int64           `json:"responseTime"`
 }
 
-func (s *ServerStat) ServerStat() *Usage {
+func (s *ServerStat) GetCurrentServerStat() *Usage {
 	disk := make(chan DiskInformation)
 	go DiskUsage(disk)
 	usage := CpuAndMemoryUsage()

@@ -15,6 +15,7 @@ func main() {
 	config := configs.GetAppConfig()
 	router := chi.NewRouter()
 	serverStat := serverStat.NewServerStat()
+	go serverStat.StoreStats()
 
 	//cors
 	router.Use(cors.Handler(cors.Options{
@@ -26,11 +27,17 @@ func main() {
 		MaxAge:           300,
 	}))
 
-	router.Get("/server-stat", func(w http.ResponseWriter, r *http.Request) {
-		stat := serverStat.ServerStat()
+	router.Get("/current-server-stat", func(w http.ResponseWriter, r *http.Request) {
+		stat := serverStat.GetCurrentServerStat()
 
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(stat)
+	})
+
+	router.Get("/server-stats", func(w http.ResponseWriter, r *http.Request) {
+		stats := serverStat.GetLoggedServerStat()
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(stats)
 	})
 	fmt.Println("Server running on port: ", config.ListenPort)
 	http.ListenAndServe(fmt.Sprintf(":%d", config.ListenPort), router)

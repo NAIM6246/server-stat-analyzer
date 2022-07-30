@@ -1,3 +1,5 @@
 {
-    "ListenPort" : 8000
+    "ListenPort" : 8000,
+    "maxAllowedToStore" : 180,
+    "interval" : 1
 }
